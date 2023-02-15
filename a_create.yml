@@ -1,0 +1,78 @@
+a_create:
+#_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+# региональные поддомены
+#_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+  - { name: almetyevsk, ip: '{{ default_ip }}' }
+  - { name: balakovo, ip: '{{ default_ip }}' }
+  - { name: belebey, ip: '{{ default_ip }}' }
+  - { name: belgorod, ip: '{{ default_ip }}' }
+  - { name: buzuluk, ip: '{{ default_ip }}' }
+  - { name: cheboksary, ip: '{{ default_ip }}' }
+  - { name: engels, ip: '{{ default_ip }}' }
+  - { name: ishimbay, ip: '{{ default_ip }}' }
+  - { name: izhevsk, ip: '{{ default_ip }}' }
+  - { name: leninogorsk, ip: '{{ default_ip }}' }
+  - { name: lipetsk, ip: '{{ default_ip }}' }
+  - { name: meleuz, ip: '{{ default_ip }}' }
+  - { name: moscow, ip: '{{ default_ip }}' }
+  - { name: nabchelny, ip: '{{ default_ip }}' }
+  - { name: neftekamsk, ip: '{{ default_ip }}' }
+  - { name: nizhnekamsk, ip: '{{ default_ip }}' }
+  - { name: novocheboksarsk, ip: '{{ default_ip }}' }
+  - { name: novotroitsk, ip: '{{ default_ip }}' }
+  - { name: oktyabrskoe, ip: '{{ default_ip }}' }
+  - { name: oktyabrsky, ip: '{{ default_ip }}' }
+  - { name: orenburg, ip: '{{ default_ip }}' }
+  - { name: orsk, ip: '{{ default_ip }}' }
+  - { name: oskol, ip: '{{ default_ip }}' }
+  - { name: salavat, ip: '{{ default_ip }}' }
+  - { name: saratov, ip: '{{ default_ip }}' }
+  - { name: sterlitamak, ip: '{{ default_ip }}' }
+  - { name: store, ip: '{{ default_ip }}' }
+  - { name: tujjmazy, ip: '{{ default_ip }}' }
+  - { name: ufa, ip: '{{ default_ip }}' }
+  - { name: syzran, ip: '{{ default_ip }}' }
+
+#_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+# региональные оптовые поддомены
+#_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+  - { name: opt, ip: '{{ default_ip }}' }
+  - { name: almetyevsk.opt, ip: '{{ default_ip }}' }
+  - { name: balakovo.opt, ip: '{{ default_ip }}' }
+  - { name: belebey.opt, ip: '{{ default_ip }}' }
+  - { name: belgorod.opt, ip: '{{ default_ip }}' }
+  - { name: buzuluk.opt, ip: '{{ default_ip }}' }
+  - { name: cheboksary.opt, ip: '{{ default_ip }}' }
+  - { name: engels.opt, ip: '{{ default_ip }}' }
+  - { name: ishimbay.opt, ip: '{{ default_ip }}' }
+  - { name: izhevsk.opt, ip: '{{ default_ip }}' }
+  - { name: leninogorsk.opt, ip: '{{ default_ip }}' }
+  - { name: lipetsk.opt, ip: '{{ default_ip }}' }
+  - { name: meleuz.opt, ip: '{{ default_ip }}' }
+  - { name: nabchelny.opt, ip: '{{ default_ip }}' }
+  - { name: neftekamsk.opt, ip: '{{ default_ip }}' }
+  - { name: nizhnekamsk.opt, ip: '{{ default_ip }}' }
+  - { name: novocheboksarsk.opt, ip: '{{ default_ip }}' }
+  - { name: novotroitsk.opt, ip: '{{ default_ip }}' }
+  - { name: oktyabrskoe.opt, ip: '{{ default_ip }}' }
+  - { name: oktyabrsky.opt, ip: '{{ default_ip }}' }
+  - { name: orenburg.opt, ip: '{{ default_ip }}' }
+  - { name: orsk.opt, ip: '{{ default_ip }}' }
+  - { name: oskol.opt, ip: '{{ default_ip }}' }
+  - { name: salavat.opt, ip: '{{ default_ip }}' }
+  - { name: saratov.opt, ip: '{{ default_ip }}' }
+  - { name: sterlitamak.opt, ip: '{{ default_ip }}' }
+  - { name: store.opt, ip: '{{ default_ip }}' }
+  - { name: tujjmazy.opt, ip: '{{ default_ip }}' }
+  - { name: ufa.opt, ip: '{{ default_ip }}' }
+  - { name: syzran.opt, ip: '{{ default_ip }}' }
+
+  #_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+  # общие записи
+  #_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+  - { name: kibana, ip: '{{ default_ip }}' }
+  
+  #_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+  # служебные записи
+  #_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+  - { name: mx, ip: '{{ default_ip }}' }

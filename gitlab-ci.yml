@@ -1,0 +1,49 @@
+# This file is a template, and might need editing before it works on your project.
+# This file is a template demonstrating the `script` keyword.
+# Learn more about this keyword here: https://docs.gitlab.com/ee/ci/yaml/README.html#script
+
+# After committing this template, visit CI/CD > Jobs to see the script output.
+
+image:
+  name: willhallonline/ansible:2.9-centos-8
+
+cache:
+  key: strlandev1online
+  untracked: true
+  policy: pull-push
+
+stages:
+  - test
+  - check_deploy
+  - deploy
+
+variables:
+  PLAYBOOK: strlandev1.online.yml
+  ANSIBLE_HOST_KEY_CHECKING: "False"
+  GIT_STRATEGY: clone
+
+test_playbook:
+  stage: test
+  script:
+    - ansible --version
+    - ansible-lint -p ${PLAYBOOK}  
+
+check_deploy_playbook:
+  stage: check_deploy    
+  script:    
+    - pip --proxy="http://srv-proxy.ru:3366" install boto awscli boto3
+    - echo "[Credentials]" > ~/.boto
+    - echo "aws_access_key_id = ${AWS_ACCESS_KEY_ID}" >> ~/.boto    
+    - echo "aws_secret_access_key = ${AWS_ACCESS_KEY}" >> ~/.boto    
+    - ansible-playbook -i ",localhost" ${PLAYBOOK} --diff --check --extra-vars "ansible_python_interpreter=/usr/bin/python3"
+
+deploy_playbook:
+  stage: deploy    
+  script:    
+    - pip --proxy="http://srv-proxy.ru:3366" install boto awscli boto3     
+    - echo "[Credentials]" > ~/.boto
+    - echo "aws_access_key_id = ${AWS_ACCESS_KEY_ID}" >> ~/.boto    
+    - echo "aws_secret_access_key = ${AWS_ACCESS_KEY}" >> ~/.boto    
+    - ansible-playbook -i ",localhost" ${PLAYBOOK} --diff --extra-vars "ansible_python_interpreter=/usr/bin/python3"
+
+  when: manual

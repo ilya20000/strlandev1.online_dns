@@ -1,0 +1,164 @@
+#_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+# REQUIREMENTS:
+# - Ansible >= 2.5
+# - sudo pip2 install awscli boto boto3
+# - aws configure //(see https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html)
+
+#_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+
+#_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+# PREDIFINED HOSTS:
+#_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+- hosts: localhost
+  connection: local
+
+#_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+# PREDIFINED VARS:
+#_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+  vars:
+    - total_steps: 15
+    - default_region: eu-central-1
+    - default_zone: strlandev1.online
+    - default_ip: 8.8.8.8
+    - default_ttl: 3600
+
+#_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+# TASKS:
+#_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+  tasks:
+    - name: (1 / {{ total_steps }}) Create default A record for ZONE '{{ default_zone }}'
+      route53:
+        state: present
+        zone: '{{ default_zone }}'
+        type: A
+        ttl: '{{ default_ttl }}'
+        record: '{{ default_zone }}'
+        value: '{{ default_ip }}'
+        overwrite: yes
+    #_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+
+    - name: (2 / {{ total_steps }}) Load A records, that should be created
+      include_vars:
+        file: a_create.yml
+    #_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+
+    - name: (3 / {{ total_steps }}) Load A records, that should be removed
+      include_vars:
+        file: a_delete.yml
+    #_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+
+    - name: (4 / {{ total_steps }}) Load TXT records, that should be created
+      include_vars:
+        file: txt_create.yml
+    #_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+
+    - name: (5 / {{ total_steps }}) Load TXT records, that should be removed
+      include_vars:
+        file: txt_delete.yml
+    #_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+
+    - name: (6 / {{ total_steps }}) Load CNAME records, that should be created
+      include_vars:
+        file: cname_create.yml
+    #_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+    - name: (7 / {{ total_steps }}) Load CNAME records, that should be removed
+      include_vars:
+        file: cname_delete.yml
+    #_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+
+    - name: (8 / {{ total_steps }}) Create all A records, that should be created
+      route53:
+        state: present
+        zone: '{{ default_zone }}'
+        type: A
+        ttl: '{{ item.ttl | default(default_ttl) }}'
+        record: '{{ item.name }}.{{ default_zone }}'
+        value: '{{ item.ip | default(default_ip) }}'
+        overwrite: yes
+      loop: '{{ a_create | default([], True) }}'
+      when: a_create | length > 0
+    #_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+
+    - name: (9 / {{ total_steps }}) Remove all A records, that should be removed
+      route53:
+        state: absent
+        zone: '{{ default_zone }}'
+        type: A
+        ttl: '{{ item.ttl | default(default_ttl) }}'
+        record: '{{ item.name }}.{{ default_zone }}'
+        value: '{{ item.ip | default(default_ip) }}'
+      loop: '{{ a_delete | default([], True) }}'
+      when: a_delete | length > 0
+    #_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+
+    - name: (10 / {{ total_steps }}) Create MX records
+      route53:
+        state: present
+        zone: '{{ default_zone }}'
+        type: MX
+        ttl: '{{ default_ttl }}'
+        record: '{{ default_zone }}'
+        value: ['10 mx.stroylandiya.ml']
+        overwrite: yes
+    #_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+
+        #    - name: (11 / {{ total_steps }}) Create SPF record
+        #      route53:
+        #        state: present
+        #        zone: '{{ default_zone }}'
+        #        type: TXT
+        #        ttl: '{{ default_ttl }}'
+        #        record: '{{ default_zone }}'
+        #        value: '"v=spf1 +a +mx +ip4:85.192.138.166 +ip4:79.104.20.62 +ip4:92.53.100.83 +ip4:93.90.216.19 +ip4:95.213.214.123 +include:spf-es-ru.com +include:spf.get-n-post.ru +include:mxsspf.sendpulse.com -all"'
+        #        overwrite: yes
+    #_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+
+    - name: (12 / {{ total_steps }}) Create all TXT records, that should be created
+      route53:
+        state: present
+        zone: '{{ default_zone }}'
+        type: TXT
+        ttl: '{{ item.ttl | default(default_ttl) }}'
+        record: '{{ item.name }}.{{ default_zone }}'
+        value: '{{ item.value | default("") }}'
+        overwrite: yes
+      loop: '{{ txt_create | default([], True) }}'
+      when: txt_create | length > 0
+    #_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+
+    - name: (13 / {{ total_steps }}) Remove all TXT records, that should be removed
+      route53:
+        state: absent
+        zone: '{{ default_zone }}'
+        type: TXT
+        ttl: '{{ item.ttl | default(default_ttl) }}'
+        record: '{{ item.name }}.{{ default_zone }}'
+        value: '{{ item.value | default("") }}'
+      loop: '{{ txt_delete | default([], True) }}'
+      when: txt_delete | length > 0
+    #_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+
+    - name: (14 / {{ total_steps }}) Create all CNAME records, that should be created
+      route53:
+        state: present
+        zone: '{{ default_zone }}'
+        type: CNAME
+        ttl: '{{ item.ttl | default(default_ttl) }}'
+        record: '{{ item.name }}.{{ default_zone }}'
+        value: '{{ item.value | default("") }}'
+        overwrite: yes
+      loop: '{{ cname_create | default([], True) }}'
+      when: cname_create | length > 0
+    #_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
+
+    - name: (15 / {{ total_steps }}) Remove all CNAME records, that should be removed
+      route53:
+        state: absent
+        zone: '{{ default_zone }}'
+        type: TXT
+        ttl: '{{ item.ttl | default(default_ttl) }}'
+        record: '{{ item.name }}.{{ default_zone }}'
+        value: '{{ item.value | default("") }}'
+      loop: '{{ cname_delete | default([], True) }}'
+      when: cname_delete | length > 0
+    #_,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,__,.-*^*-.,_
